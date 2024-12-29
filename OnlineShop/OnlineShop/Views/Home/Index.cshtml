@@ -1,0 +1,76 @@
+﻿@using System.Text.Json
+
+
+@{
+    ViewData["Title"] = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using System.Text.Json
+@{
+    var reportData = JsonSerializer.Deserialize<List<dynamic>>(ViewBag.ReportData);
+}
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>報表圖</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <canvas id="mixedChart" width="400" height="200"></canvas>
+
+    <script>
+        const data = @Html.Raw(ViewBag.ReportData); // 將資料傳遞給 JavaScript
+
+        // 合併重複項
+        const aggregatedData = data.reduce((acc, item) => {
+            const existingItem = acc.find(i => i.ProductName === item.ProductName);
+            if (existingItem) {
+                existingItem.Amount += item.Amount; // 合併數量
+                existingItem.SubTotal += item.SubTotal; // 合併小計
+            } else {
+                acc.push({ ProductName: item.ProductName, Amount: item.Amount, SubTotal: item.SubTotal });
+            }
+            return acc;
+        }, []);
+
+        const labels = aggregatedData.map(item => item.ProductName); // 獲取產品名稱作為標籤
+        const amounts = aggregatedData.map(item => item.Amount); // 獲取數量作為條形圖數據
+        const subtotals = aggregatedData.map(item => item.SubTotal); // 獲取小計作為折線圖數據
+
+        const ctx = document.getElementById('mixedChart').getContext('2d');
+
+        const mixedChart = new Chart(ctx, {
+            type: 'bar', // 主類型為條形圖
+            data: {
+                labels: labels, // 使用產品名稱作為標籤
+                datasets: [{
+                    type: 'bar', // 條形圖數據集
+                    label: '銷售數量',
+                    data: amounts,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }, {
+                    type: 'line', // 折線圖數據集
+                    label: '小計',
+                    data: subtotals,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    fill: false,
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

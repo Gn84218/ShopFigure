@@ -1,0 +1,108 @@
+﻿@model OnlineShop.Models.DetailViewModel
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>詳細</h1>
+
+<p></p>
+
+<div>
+   <div class="row justify-content-center">
+    <div class="col-5 mx-auto" style="max-width: 45%;">
+        <img src="@Html.DisplayFor(model => model.imgsrc)" class="img-fluid" style="max-height:400px;" />
+    </div>
+
+    <div class="col-5" style="max-width: 45%;">
+        <div class="row">
+            <div class="col">
+                <p class="alert-light m-0">商品名稱</p>
+                <h3>@Html.DisplayFor(model => model.product.Name)</h3>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <p class="alert-light m-0">描述</p>
+                <pre>@Html.DisplayFor(model => model.product.Description)</pre>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <p>單價</p>
+                <h6>@Html.DisplayFor(model => model.product.Price)</h6>
+            </div>
+            <div class="col">
+                <p>庫存</p>
+                <h6>@Html.DisplayFor(model => model.product.Stock)</h6>
+            </div>
+        </div>
+    </div>
+   </div>
+
+
+   
+</div>
+
+
+<ul id="myTab" class="nav nav-tabs d-flex">
+    <li class="nav-item flex-fill text-center">
+        <a class="nav-link text-dark" href="#Content" data-bs-toggle="tab">詳細內容</a>
+    </li>
+    <li class="nav-item flex-fill active text-center">
+        <a class="nav-link text-dark" href="#Comment" data-bs-toggle="tab">留言板</a>
+    </li>
+</ul>
+
+<div id="myTabContent" class="tab-content">
+
+    <!-- 詳細資料 -->
+    <div class="tab-pane fade show active" id="Content">
+        <div class="row">
+            <div class="col">
+                <p class="alert-light m-0">@Html.DisplayNameFor(model => model.product.Content)</p>
+                @Html.Raw(Model.product.Content)
+            </div>
+        </div>
+    </div>
+
+    <!-- 留言板 -->
+    <div class="tab-pane fade" id="Comment">
+        <p></p>
+        <p class="alert-light m-0">共 @Model.product.Comments.Count 則留言</p>
+        <div>
+            @foreach (var comments in Model.product.Comments)
+            {
+                <div class="row m-3">
+                    <div class="col-1"></div>
+                    <div class="col-11" style="background-color: #f8f9fa">
+                        <p> <span class="font-weight-bold">@comments.UserName</span> <span class="text-muted">． @comments.Time</span> </p>
+                        <p>@comments.Content</p>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <form class="input-group" asp-action="AddComment" asp-route-Id="@Model.product.Id">
+            <textarea class="form-control" type="text" placeholder="請先登入再留言" name="myComment" style="height:100px"></textarea>
+            <input class="btn btn-sm btn-primary" type="submit" style="width:50px" value="送出" />
+        </form>
+    </div>
+
+</div>
+
+<p></p>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<script>
+    // 此處不需要再使用 jQuery 來控制 tab 切換，因為 Bootstrap 5 內建支持
+    $(".nav .nav-link").on("click", function () {
+        $(".nav").find("li.active").removeClass("active");
+        $(this).parent('li').addClass('active');
+    });
+</script>

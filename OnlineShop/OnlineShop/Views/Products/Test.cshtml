@@ -1,0 +1,69 @@
+﻿@model IEnumerable<OnlineShop.Models.Product>
+
+@{
+    ViewData["Title"] = "Test";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<table id="myTable" class="display Examples display">
+    <thead>
+        <!--標題-->
+         <tr>       
+            <th>
+                @Html.DisplayNameFor(model => model.First().Name) <!-- 使用 First() 访问第一个产品 -->
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Price)
+            </th>
+            <th>
+                存貨
+            </th>
+            <th>操作</th>
+         </tr>
+    </thead>
+    
+    <tbody> 
+        <!--資料內容-->
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <th>
+                    @Html.DisplayFor(modelItem => item.Category.Name)
+                </th>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @if (item.Stock > 0)
+                    {
+                        @Html.Raw("<span class="+"\" badge bg-success text-white \"" + ">在庫中</span>")
+                    }
+                    else
+                    {
+                        @Html.Raw("<span class="+"\" badge bg-warning text-dark \"" + ">缺貨中</span>")
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">編輯</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">詳細</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">刪除</a>
+                </td>
+            </tr>
+
+
+        }
+        
+    </tbody>
+</table> 
+
+
+
+

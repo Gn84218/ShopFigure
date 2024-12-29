@@ -1,0 +1,104 @@
+﻿@model IEnumerable<OnlineShop.Models.DetailViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>公告幻燈框</title>
+    <!-- 引入 Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<div class="mt-5 container">
+    <h3 class="mb-4 text-center">最新公告</h3>
+    <!-- 幻燈框容器 -->
+    <div id="announcementCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <!-- 第一個公告 -->
+            <div class="carousel-item active">
+                <div class="d-flex justify-content-center align-items-center bg-light p-4">
+                    <h5 class="mb-0 text-center">📢 公告 1: 本店將於週末舉辦促銷活動，敬請參加！</h5>
+                </div>
+            </div>
+            <!-- 第二個公告 -->
+            <div class="carousel-item">
+                <div class="d-flex justify-content-center align-items-center bg-light p-4">
+                    <h5 class="mb-0 text-center">📢 公告 2: 系統維護將於本週二凌晨 2 點進行，請提前準備。</h5>
+                </div>
+            </div>
+            <!-- 第三個公告 -->
+            <div class="carousel-item">
+                <div class="d-flex justify-content-center align-items-center bg-light p-4">
+                    <h5 class="mb-0 text-center">📢 公告 3: 新產品已上架，歡迎選購！</h5>
+                </div>
+            </div>
+        </div>
+        <!-- 左右切換按鈕 -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#announcementCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#announcementCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</div>
+
+
+
+<h1>共 @ViewBag.count 筆資料</h1>
+<div class="row">
+    <div class="col-3">
+        <p></p>
+        @await Component.InvokeAsync("CategoriesList")
+    </div>
+    <div class="col-9">
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-4 col-sm-6 col-xs-12 mb-4">
+                    <div class="card h-100 rounded shadow-sm" style="width: 16rem">
+                        <img src="@Html.DisplayFor(modelItem => item.imgsrc)" class="card-img-top">
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                @Html.DisplayFor(modelItem => item.product.Name)
+                            </h6>
+                            <p class="card-text overflow-text" style="font-size:small;">
+                                @Html.DisplayFor(modelItem => item.product.Description)
+                            </p>
+                        </div>
+                        <a class="stretched-link" asp-action="Details" asp-route-id="@item.product.Id"></a>
+                        <div class="card-footer btn btn-light" style="position: relative;">
+                            <div class="text-center">
+                                @if (item.product.Stock > 1)
+                                {
+                                    <a class="stretched-link text-dark" style="text-decoration: none;"
+                                       onclick="ShowMessage()"
+                                       asp-controller="Cart" asp-action="AddtoCart"
+                                       asp-route-Id="@item.product.Id">加入購物車</a>
+                                }
+                                else
+                                {
+                                    <div class="text-muted">商品缺貨中</div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function ShowMessage() {
+        toastr["success"]("商品已加入購物車！");
+    }
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

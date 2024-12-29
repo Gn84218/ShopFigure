@@ -1,0 +1,16 @@
+﻿
+@model OnlineShop.Areas.Identity.Data.OnlineShopUserRole
+@{
+   
+}
+<h2>輸入角色名稱</h2>
+
+<form asp-action="RoleCreate" method="post">
+    <div class="form-group">
+        <label asp-for="RoleName">角色名稱</label> 
+        <input asp-for="RoleName" type="text" class="form-control" placeholder="請輸入角色名稱" />
+        <span asp-validation-for="RoleName" class="text-danger"></span>
+    </div>
+    <button type="submit" value="RoleCreate" class="btn btn-primary mt-3">提交</button>
+</form>
+
